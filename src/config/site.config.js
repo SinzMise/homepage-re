@@ -10,7 +10,11 @@ export const siteConfig = {
     location: "中国·广东潮州",
     copyright: "© SinZero Limited",
     // 背景图片URL
-    background: "https://t.alcy.cc/moez"
+    background: "https://t.alcy.cc/moez",
+    netlifystatus:{
+      image: 'https://api.netlify.com/api/v1/badges/f36f2bed-5d17-4ce1-aa30-75c1b6652885/deploy-status',
+      link: 'https://app.netlify.com/projects/paintdreamfun/deploys'
+    }
   },
 
   socialLinks: [
@@ -50,5 +54,15 @@ export const siteConfig = {
         { name: "魔法店二号", url: "https://qm.qq.com/q/ZqcDxtIFW2" }
       ]
     }
-  ]
+  ],
+
+  UmamiConfig: {
+    enable: true,
+    src: "https://umami.status.sinzmise.top/a8f9c04189c7d6a2b6b03f4f3948ef41",
+    websiteId: "00ab1f37-8bef-49d8-a012-64a64270e3d6",
+    domains: "www.freebird2913.tech",
+    autoTrack: true,
+    delayLoad: 2000, // 延迟2秒加载,不影响首屏
+  }
+
 };

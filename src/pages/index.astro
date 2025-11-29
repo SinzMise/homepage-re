@@ -3,7 +3,7 @@
 import { siteConfig } from '../config/site.config.js';
 
 // 从配置文件获取数据
-const { personalInfo, linkCategories, socialLinks } = siteConfig;
+const { personalInfo, linkCategories, socialLinks, UmamiConfig } = siteConfig;
 
 // 导入本地头像图片
 import LocalAvatar from '../assets/avatar.png';
@@ -359,6 +359,37 @@ import 'remixicon/fonts/remixicon.css';
         border-radius: 10px;
       }
     </style>
+    {UmamiConfig.enable && (
+      <script
+        is:inline
+        define:vars={{ src: UmamiConfig.src, websiteId: UmamiConfig.websiteId, domains: UmamiConfig.domains, autoTrack: UmamiConfig.autoTrack, delayLoad: UmamiConfig.delayLoad }}
+      >
+        // 延迟加载Umami脚本
+        function loadUmami() {
+          const script = document.createElement('script');
+          script.defer = true;
+          script.src = src;
+          script.setAttribute('data-website-id', websiteId);
+
+          if (domains) {
+            script.setAttribute('data-domains', domains);
+          }
+
+          if (autoTrack !== undefined) {
+            script.setAttribute('data-auto-track', autoTrack.toString());
+          }
+
+          document.head.appendChild(script);
+        }
+
+        // 延迟加载
+        if (delayLoad && delayLoad > 0) {
+          setTimeout(loadUmami, delayLoad);
+        } else {
+          loadUmami();
+        }
+      </script>
+    )}
   </head>
   <body style={`background-image: url('${personalInfo.background}')`}>
     <div class="container retro-border">
@@ -416,6 +447,10 @@ import 'remixicon/fonts/remixicon.css';
       
       <footer class="footer">
         <p>{personalInfo.copyright}</p>
+        <p>Powered By <a href='https://astro.build/'>Astro</a></p>
+        {personalInfo.netlifystatus &&  
+          <a href={personalInfo.netlifystatus.link} target="_blank" rel="noopener noreferrer"><img src={personalInfo.netlifystatus.image}></a>
+        }
       </footer>
     </div>
   </body>
