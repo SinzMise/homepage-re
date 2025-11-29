@@ -60,7 +60,7 @@ export const siteConfig = {
     enable: true,
     src: "https://umami.status.sinzmise.top/a8f9c04189c7d6a2b6b03f4f3948ef41",
     websiteId: "00ab1f37-8bef-49d8-a012-64a64270e3d6",
-    domains: "www.freebird2913.tech",
+    domains: "www.storical.fun",
     autoTrack: true,
     delayLoad: 2000, // 延迟2秒加载,不影响首屏
   }
