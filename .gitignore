@@ -23,3 +23,4 @@ packages/**/e2e/**/fixtures/**/.astro/
 examples/**/.astro/
 # Miscellaneous
 package-lock.json
+.astro
