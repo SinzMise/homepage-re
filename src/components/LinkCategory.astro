@@ -1,0 +1,30 @@
+---
+interface Props {
+  category: {
+    name: string;
+    links: Array<{
+      name: string;
+      url: string;
+      description?: string;
+      image?: string;
+    }>;
+  };
+}
+
+const { category } = Astro.props;
+---
+
+<div class="category">
+  <h2>{category.name}</h2>
+  <div class="links-grid">
+    {category.links.map((link) => (
+      <div class="link-card">
+        {link.image && <img src={link.image} alt={link.name} class="link-image" />}
+        <a href={link.url} target="_blank" rel="noopener noreferrer">
+          {link.name}
+        </a>
+        {link.description && <p class="link-description">{link.description}</p>}
+      </div>
+    ))}
+  </div>
+</div>

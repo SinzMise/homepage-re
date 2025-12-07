@@ -1,0 +1,7 @@
+// 主样式文件 - 导入所有SCSS模块
+
+@use 'variables' as *;
+@use 'mixins' as *;
+@use 'base';
+@use 'components';
+@use 'responsive';

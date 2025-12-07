@@ -1,0 +1,19 @@
+---
+// 导入配置文件
+import { siteConfig } from '../config/site.config.js';
+
+// 从配置文件获取数据
+const { personalInfo } = siteConfig;
+---
+
+<div class="contact-info">
+  <h2 class="section-title">联系信息</h2>
+  <div class="contact-item">
+    <i class="ri-mail-line contact-icon"></i>
+    <span><a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a></span>
+  </div>
+  <div class="contact-item">
+    <i class="ri-map-pin-line contact-icon"></i>
+    <span>{personalInfo.location}</span>
+  </div>
+</div>

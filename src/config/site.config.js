@@ -30,28 +30,63 @@ export const siteConfig = {
     {
       name: "绘星·汐娜物语",
       links: [
-        { name: "绘星里博客", url: "https://blog.storical.fun/" }
+        { 
+          name: "绘星里博客", 
+          url: "https://blog.storical.fun/",
+          description: "个人技术博客",
+          image: "https://picsum.photos/100/60?random=1"
+        }
       ]
     },
     {
       name: "魔法中弦",
       links: [
-        { name: "魔法监测站", url: "https://monitor.sinzmise.top/" },
-        { name: "中弦记事本", url: "https://diary.sinzmise.top/" }
+        { 
+          name: "魔法监测站", 
+          url: "https://monitor.sinzmise.top/",
+          description: "网站状态监控",
+          image: "https://picsum.photos/100/60?random=2"
+        },
+        { 
+          name: "中弦记事本", 
+          url: "https://diary.sinzmise.top/",
+          description: "个人日记记录",
+          image: "https://picsum.photos/100/60?random=3"
+        }
       ]
     },
     {
       name: "潮汐工坊",
       links: [
-        { name: "封面生成器1", url: "https://covermake.sinzmise.top/" },
-        { name: "封面生成器2", url: "https://minicover.sinzmise.top/" }
+        { 
+          name: "封面生成器1", 
+          url: "https://covermake.sinzmise.top/",
+          description: "音乐专辑封面生成",
+          image: "https://picsum.photos/100/60?random=4"
+        },
+        { 
+          name: "封面生成器2", 
+          url: "https://minicover.sinzmise.top/",
+          description: "简约风格封面生成",
+          image: "https://picsum.photos/100/60?random=5"
+        }
       ]
     },
     {
       name: "官方群聊",
       links: [
-        { name: "魔法店一号", url: "https://qm.qq.com/q/C9pQTYPDtm" },
-        { name: "魔法店二号", url: "https://qm.qq.com/q/ZqcDxtIFW2" }
+        { 
+          name: "魔法店一号", 
+          url: "https://qm.qq.com/q/C9pQTYPDtm",
+          description: "技术交流群",
+          image: "https://picsum.photos/100/60?random=6"
+        },
+        { 
+          name: "魔法店二号", 
+          url: "https://qm.qq.com/q/ZqcDxtIFW2",
+          description: "生活分享群",
+          image: "https://picsum.photos/100/60?random=7"
+        }
       ]
     }
   ],

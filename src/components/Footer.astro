@@ -1,0 +1,17 @@
+---
+// 导入配置文件
+import { siteConfig } from '../config/site.config.js';
+
+// 从配置文件获取数据
+const { personalInfo } = siteConfig;
+---
+
+<footer class="footer">
+  <p>{personalInfo.copyright}</p>
+  <p>Powered By <a href='https://astro.build/'>Astro</a></p>
+  {personalInfo.netlifystatus &&  
+    <a href={personalInfo.netlifystatus.link} target="_blank" rel="noopener noreferrer">
+      <img src={personalInfo.netlifystatus.image} alt="Netlify Status">
+    </a>
+  }
+</footer>

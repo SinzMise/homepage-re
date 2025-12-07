@@ -1,0 +1,28 @@
+---
+// 导入配置文件
+import { siteConfig } from '../config/site.config.js';
+
+// 导入本地头像图片
+import LocalAvatar from '../assets/avatar.png';
+
+// 从配置文件获取数据
+const { personalInfo, socialLinks } = siteConfig;
+---
+
+<div class="profile-container">
+  <!-- 使用本地头像图片 -->
+  <div class="avatar">
+    <img src={LocalAvatar.src} alt="头像" />
+  </div>
+  <div class="profile-info">
+    <h2>{personalInfo.name}</h2>
+    <p>{personalInfo.bio}</p>
+    <p>
+      {socialLinks.map((social) => (
+        <a href={social.href} target="_blank" rel="noopener noreferrer" name={social.name}>
+          <i class={`${social.icon} contact-icon`}></i>
+        </a>
+      ))}
+    </p>
+  </div>
+</div>

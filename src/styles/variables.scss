@@ -1,0 +1,32 @@
+// 复古风格主题变量
+:root {
+  --primary-color: #2c2c2c;
+  --secondary-color: #8b5a2b;
+  --accent-color: #d4af37;
+  --background-color: rgba(255, 255, 255, 0.85);
+  --text-color: #333;
+  --border-color: #c0c0c0;
+}
+
+// SCSS变量
+$primary-color: #2c2c2c;
+$secondary-color: #8b5a2b;
+$accent-color: #d4af37;
+$background-color: rgba(255, 255, 255, 0.85);
+$text-color: #333;
+$border-color: #c0c0c0;
+
+// 字体
+$font-family-primary: 'Noto Sans SC', sans-serif;
+$font-family-secondary: 'Press Start 2P', cursive;
+
+// 断点
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+
+// 间距
+$spacing-xs: 0.5rem;
+$spacing-sm: 0.8rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;

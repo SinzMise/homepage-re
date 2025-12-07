@@ -1,0 +1,77 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Press+Start+2P&display=swap');
+
+// 基础样式
+a {
+  text-decoration: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-family-primary;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: $text-color;
+  min-height: 100vh;
+  @include flex-center;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  width: 90%;
+  margin: $spacing-xl auto;
+  background: $background-color;
+  border: 2px solid $border-color;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  
+  @include retro-border;
+}
+
+.header {
+  background: $primary-color;
+  color: white;
+  padding: $spacing-xl;
+  text-align: center;
+  border-bottom: 3px solid $accent-color;
+  
+  h1 {
+    margin: 0;
+    font-family: $font-family-secondary;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+  
+  p {
+    margin: 0.5rem 0 0;
+    font-size: 1rem;
+  }
+}
+
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+  padding: $spacing-xl;
+}
+
+.section-title {
+  color: $secondary-color;
+  font-weight: bold;
+  margin-bottom: $spacing-md;
+  padding-bottom: $spacing-xs;
+  border-bottom: 2px solid $accent-color;
+}
+
+.footer {
+  text-align: center;
+  padding: $spacing-lg;
+  background: $primary-color;
+  color: white;
+  font-size: 0.8rem;
+}

@@ -1,0 +1,12 @@
+---
+// 导入配置文件
+import { siteConfig } from '../config/site.config.js';
+
+// 从配置文件获取数据
+const { personalInfo } = siteConfig;
+---
+
+<header class="header">
+  <h1>{personalInfo.title}</h1>
+  <p>{personalInfo.subtitle}</p>
+</header>
