@@ -2,7 +2,7 @@
 export const siteConfig = {
   // 个人信息
   personalInfo: {
-    title: "中弦局·绘梦乐园",
+    title: "中弦局·故事乐园",
     subtitle: "欢迎来到这个有故事和魔法的乐园",
     name: "王九弦SZ·Ninty",
     bio: "如果我死了，就让风将我的故事流传下去吧",
