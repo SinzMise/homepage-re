@@ -2,28 +2,26 @@
 ---
 
 <script client:load>
-  // 客户端路由实现
+  // 轻量级无刷新加载实现
   class ClientRouter {
     constructor() {
+      this.isLoading = false;
       this.init();
     }
 
     init() {
-      console.log('ClientRouter initialized');
       // 监听所有链接点击
       document.addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (link && this.shouldHandleLink(link)) {
           e.preventDefault();
-          console.log('Navigating to:', link.href);
           this.navigate(link.href);
         }
       });
 
       // 监听浏览器历史变化
       window.addEventListener('popstate', (e) => {
-        if (e.state) {
-          console.log('Popstate to:', e.state.url);
+        if (e.state && e.state.url) {
           this.loadPage(e.state.url, false);
         }
       });
@@ -31,41 +29,47 @@
 
     shouldHandleLink(link) {
       // 只处理站内链接，不处理外部链接和特殊链接
-      const linkUrl = new URL(link.href);
-      const currentUrl = new URL(window.location.href);
-      
-      // 规范化 URL 比较（去除尾部斜杠和哈希）
-      const normalizedLinkUrl = linkUrl.origin + linkUrl.pathname.replace(/\/$/, '') + linkUrl.search;
-      const normalizedCurrentUrl = currentUrl.origin + currentUrl.pathname.replace(/\/$/, '') + currentUrl.search;
-      
-      const result = (
-        link.host === window.location.host &&
-        !link.getAttribute('target') &&
-        !link.hasAttribute('data-no-router') &&
-        normalizedLinkUrl !== normalizedCurrentUrl
-      );
-      console.log('Should handle link:', link.href, result);
-      return result;
+      try {
+        const linkUrl = new URL(link.href);
+        const currentUrl = new URL(window.location.href);
+        
+        // 规范化 URL 比较
+        const normalizedLinkUrl = linkUrl.origin + linkUrl.pathname.replace(/\/$/, '') + linkUrl.search;
+        const normalizedCurrentUrl = currentUrl.origin + currentUrl.pathname.replace(/\/$/, '') + currentUrl.search;
+        
+        return (
+          linkUrl.origin === currentUrl.origin &&
+          !link.getAttribute('target') &&
+          !link.hasAttribute('data-no-router') &&
+          normalizedLinkUrl !== normalizedCurrentUrl
+        );
+      } catch (error) {
+        return false;
+      }
     }
 
     async navigate(url) {
-      console.log('Navigate to:', url);
-      // 开始视图过渡
-      if (document.startViewTransition) {
-        console.log('Using View Transitions API');
-        document.startViewTransition(() => {
-          this.loadPage(url, true);
-        });
-      } else {
-        console.log('Falling back to regular navigation');
-        // 回退方案
-        this.loadPage(url, true);
+      if (this.isLoading) return;
+      
+      this.isLoading = true;
+      try {
+        // 显示加载指示器
+        this.showLoading();
+        
+        // 加载页面
+        await this.loadPage(url, true);
+      } catch (error) {
+        console.error('Navigation error:', error);
+        // 回退到正常导航
+        window.location.href = url;
+      } finally {
+        this.isLoading = false;
+        this.hideLoading();
       }
     }
 
     async loadPage(url, pushState = true) {
       try {
-        console.log('Loading page:', url);
         // 加载新页面
         const response = await fetch(url);
         if (!response.ok) throw new Error('Network response was not ok');
@@ -79,40 +83,46 @@
 
         // 更新历史记录
         if (pushState) {
-          console.log('Pushing state:', url);
           history.pushState({ url }, '', url);
         }
 
         // 更新页面标题
         const newTitle = doc.querySelector('title')?.textContent;
         if (newTitle) {
-          console.log('Updating title:', newTitle);
           document.title = newTitle;
         }
 
+        // 触发页面加载完成事件
+        this.triggerPageLoadEvent();
+
       } catch (error) {
         console.error('Error loading page:', error);
-        // 回退到正常导航
-        window.location.href = url;
+        throw error;
       }
     }
 
     updatePage(doc, url) {
-      console.log('Updating page content');
       // 找到主要内容区域并更新
       const mainContent = document.querySelector('main');
       const newMainContent = doc.querySelector('main');
 
       if (mainContent && newMainContent) {
-        console.log('Updating main content');
-        mainContent.classList.remove('page-loaded');
+        // 开始过渡动画
+        mainContent.style.opacity = '0';
+        mainContent.style.transform = 'translateY(20px)';
+        
         // 强制重排
         void mainContent.offsetWidth;
+        
+        // 更新内容
         mainContent.innerHTML = newMainContent.innerHTML;
-        mainContent.classList.add('page-loaded');
+        
+        // 结束过渡动画
+        mainContent.style.opacity = '1';
+        mainContent.style.transform = 'translateY(0)';
         
         // 重新初始化页面上的脚本
-        this.initScripts();
+        this.initPageScripts();
       }
 
       // 更新活动链接状态
@@ -120,31 +130,86 @@
     }
 
     updateActiveLinks(url) {
-      console.log('Updating active links:', url);
       // 更新导航链接的活动状态
       const links = document.querySelectorAll('.nav-link');
       links.forEach(link => {
-        if (link.href === url) {
-          link.classList.add('active');
-        } else {
-          link.classList.remove('active');
+        try {
+          const linkUrl = new URL(link.href);
+          const currentUrl = new URL(url);
+          
+          const normalizedLinkUrl = linkUrl.origin + linkUrl.pathname.replace(/\/$/, '');
+          const normalizedCurrentUrl = currentUrl.origin + currentUrl.pathname.replace(/\/$/, '');
+          
+          if (normalizedLinkUrl === normalizedCurrentUrl) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        } catch (error) {
+          // 忽略无效链接
         }
       });
     }
 
-    initScripts() {
-      console.log('Initializing scripts');
+    initPageScripts() {
       // 重新初始化页面上的脚本
-      // 这里可以根据需要添加特定的脚本初始化逻辑
+      // 查找页面中的脚本并执行
+      const scripts = document.querySelectorAll('main script');
+      scripts.forEach(script => {
+        if (script.type === 'module') {
+          // 对于 ES 模块，创建新的脚本标签
+          const newScript = document.createElement('script');
+          newScript.type = 'module';
+          if (script.src) {
+            newScript.src = script.src;
+          } else {
+            newScript.textContent = script.textContent;
+          }
+          script.parentNode.replaceChild(newScript, script);
+        } else {
+          // 对于普通脚本，直接执行
+          try {
+            eval(script.textContent);
+          } catch (error) {
+            console.error('Error executing script:', error);
+          }
+        }
+      });
+    }
+
+    showLoading() {
+      // 创建并显示加载指示器
+      let loader = document.getElementById('page-loader');
+      if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'page-loader';
+        loader.innerHTML = '<div class="loader-spinner"></div>';
+        document.body.appendChild(loader);
+      }
+      loader.style.display = 'flex';
+    }
+
+    hideLoading() {
+      // 隐藏加载指示器
+      const loader = document.getElementById('page-loader');
+      if (loader) {
+        loader.style.display = 'none';
+      }
+    }
+
+    triggerPageLoadEvent() {
+      // 触发自定义页面加载事件
+      const event = new CustomEvent('pageLoaded', {
+        bubbles: true,
+        cancelable: true
+      });
+      document.dispatchEvent(event);
     }
   }
 
   // 初始化客户端路由 - 确保只初始化一次
   if (typeof window !== 'undefined' && !window.ClientRouterInstance) {
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('DOMContentLoaded, initializing ClientRouter');
-      window.ClientRouterInstance = new ClientRouter();
-    });
+    window.ClientRouterInstance = new ClientRouter();
   }
 </script>
 
@@ -152,63 +217,35 @@
   /* 页面过渡动画 */
   main {
     position: relative;
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  main:not(.page-loaded) {
-    opacity: 0;
-    transform: scale(0.95);
+  /* 加载指示器样式 */
+  #page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(2px);
   }
 
-  main.page-loaded {
-    opacity: 1;
-    transform: scale(1);
+  .loader-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 
-  /* 视图过渡动画 */
-  @view-transition {
-    navigation: auto;
-  }
-
-  @keyframes fade-out {
-    from {
-      opacity: 1;
-      transform: scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-  }
-
-  @keyframes fade-in-scale {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  /* 为不同元素定义过渡效果 */
-  .page-wrapper {
-    view-transition-name: page-wrapper;
-  }
-
-  @view-transition-new(page-wrapper),
-  @view-transition-old(page-wrapper) {
-    animation-duration: 0.4s;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @view-transition-new(page-wrapper) {
-    animation-name: fade-in-scale;
-  }
-
-  @view-transition-old(page-wrapper) {
-    animation-name: fade-out;
-    opacity: 0;
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 </style>
