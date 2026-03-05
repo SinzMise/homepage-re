@@ -52,8 +52,10 @@ const rssUrl = rssConfig.url;
     const blogList = document.getElementById('blog-list');
     
     try {
-      const response = await fetch(rssUrl);
-      const xmlText = await response.text();
+        // 使用 CORS 代理解决跨域问题
+        const corsProxy = 'https://api.allorigins.win/raw?url=';
+        const response = await fetch(corsProxy + encodeURIComponent(rssUrl));
+        const xmlText = await response.text();
       
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
