@@ -31,11 +31,18 @@
 
     shouldHandleLink(link) {
       // 只处理站内链接，不处理外部链接和特殊链接
+      const linkUrl = new URL(link.href);
+      const currentUrl = new URL(window.location.href);
+      
+      // 规范化 URL 比较（去除尾部斜杠和哈希）
+      const normalizedLinkUrl = linkUrl.origin + linkUrl.pathname.replace(/\/$/, '') + linkUrl.search;
+      const normalizedCurrentUrl = currentUrl.origin + currentUrl.pathname.replace(/\/$/, '') + currentUrl.search;
+      
       const result = (
         link.host === window.location.host &&
         !link.getAttribute('target') &&
         !link.hasAttribute('data-no-router') &&
-        link.href !== window.location.href
+        normalizedLinkUrl !== normalizedCurrentUrl
       );
       console.log('Should handle link:', link.href, result);
       return result;
@@ -132,11 +139,13 @@
     }
   }
 
-  // 初始化客户端路由
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded, initializing ClientRouter');
-    new ClientRouter();
-  });
+  // 初始化客户端路由 - 确保只初始化一次
+  if (typeof window !== 'undefined' && !window.ClientRouterInstance) {
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOMContentLoaded, initializing ClientRouter');
+      window.ClientRouterInstance = new ClientRouter();
+    });
+  }
 </script>
 
 <style>
