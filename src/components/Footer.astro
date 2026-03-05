@@ -1,17 +1,64 @@
 ---
-// 导入配置文件
-import { siteConfig } from '../config/site.config.js';
-
-// 从配置文件获取数据
-const { personalInfo } = siteConfig;
 ---
 
 <footer class="footer">
-  <p>{personalInfo.copyright}</p>
-  <p>Powered By <a href='https://astro.build/'>Astro</a></p>
-  {personalInfo.netlifystatus &&  
-    <a href={personalInfo.netlifystatus.link} target="_blank" rel="noopener noreferrer">
-      <img src={personalInfo.netlifystatus.image} alt="Netlify Status">
-    </a>
-  }
+  <div class="footer-content">
+    <div class="footer-bottom">
+      <p class="copyright">
+        © SinZero Limited
+      </p>
+      <p class="powered">
+        Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+      </p>
+      <p>
+        <a href="https://app.netlify.com/projects/paintdreamfun/deploys" target="_blank" rel="noopener noreferrer"> 
+          <img src="https://api.netlify.com/api/v1/badges/f36f2bed-5d17-4ce1-aa30-75c1b6652885/deploy-status" alt="Netlify Status"> 
+        </a>
+      </p>
+    </div>
+  </div>
 </footer>
+
+<style>
+  .footer {
+    position: relative;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .footer-bottom p {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .copyright {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .powered {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .powered a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .powered a:hover {
+    color: #6ee7b7;
+  }
+</style>

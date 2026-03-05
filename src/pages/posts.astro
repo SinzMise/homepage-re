@@ -1,0 +1,435 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { rssConfig, siteConfig } from '../../astro.config.mjs';
+
+const rssUrl = rssConfig.url;
+---
+
+<Layout title={`最新文章 - ${siteConfig.title}`}>
+  <div class="page-wrapper">
+    <Header />
+    
+    <main class="main-content">
+      <div class="posts-container">
+        <div class="posts-header">
+          <h1 class="posts-title">
+            <i class="ri-article-line"></i>
+            最新文章
+          </h1>
+          <p class="posts-description">来自博客的最新动态</p>
+        </div>
+        
+        <div class="blog-card">
+          <div class="card-glow"></div>
+          <div class="card-sparkles">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span class="sparkle" style={`--delay: ${i * 0.3}s; --x: ${Math.random() * 100}%; --y: ${Math.random() * 100}%`}></span>
+            ))}
+          </div>
+          
+          <div class="blog-list" id="blog-list">
+            <div class="loading">
+              <div class="loading-animation">
+                <div class="loading-circle"></div>
+                <div class="loading-circle"></div>
+                <div class="loading-circle"></div>
+              </div>
+              <p class="loading-text">正在加载文章...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <Footer />
+  </div>
+</Layout>
+
+<script define:vars={{ rssUrl }}>
+  async function fetchPosts() {
+    const blogList = document.getElementById('blog-list');
+    
+    try {
+      const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+      const data = await response.json();
+      
+      if (data.status === 'ok' && data.items) {
+        const posts = data.items.slice(0, 10);
+        
+        blogList.innerHTML = posts.map((post, index) => {
+          const date = new Date(post.pubDate);
+          const dateStr = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
+          const excerpt = post.description ? post.description.replace(/<[^>]*>/g, '').slice(0, 120) + '...' : '';
+          const category = post.categories && post.categories[0] ? post.categories[0] : '文章';
+          
+          return `
+            <article class="blog-item" style="animation-delay: ${index * 0.08}s">
+              <div class="item-number">${String(index + 1).padStart(2, '0')}</div>
+              <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="blog-link">
+                <div class="blog-item-decoration"></div>
+                <div class="blog-item-header">
+                  <div class="category-tag">
+                    <i class="ri-price-tag-3-line tag-icon"></i>
+                    <span class="tag-text">${category}</span>
+                  </div>
+                  <span class="blog-date">
+                    <i class="ri-calendar-line date-icon"></i>
+                    ${dateStr}
+                  </span>
+                </div>
+                <h3 class="blog-item-title">${post.title}</h3>
+                <p class="blog-excerpt">${excerpt}</p>
+                <div class="blog-footer">
+                  <div class="reading-time">
+                    <i class="ri-time-line time-icon"></i>
+                    <span>~${Math.ceil(Math.random() * 5 + 3)} 分钟阅读</span>
+                  </div>
+                  <span class="read-more">
+                    <span>阅读全文</span>
+                    <span class="arrow">→</span>
+                  </span>
+                </div>
+              </a>
+            </article>
+          `;
+        }).join('');
+      } else {
+        blogList.innerHTML = `
+          <div class="error-message">
+            <i class="ri-error-warning-line"></i>
+            <p>暂时无法加载文章，请稍后重试</p>
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      blogList.innerHTML = `
+        <div class="error-message">
+          <i class="ri-error-warning-line"></i>
+          <p>加载文章时出错，请稍后重试</p>
+        </div>
+      `;
+    }
+  }
+
+  fetchPosts();
+</script>
+
+<style is:global>
+  .page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 2rem 1rem;
+  }
+
+  .posts-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .posts-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .posts-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #6ee7b7, #34d399, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .posts-title i {
+    -webkit-text-fill-color: initial;
+    font-size: 1.8rem;
+  }
+
+  .posts-description {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
+  }
+
+  .blog-card {
+    position: relative;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .blog-card:hover .card-glow {
+    opacity: 1;
+  }
+
+  .card-sparkles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    left: var(--x);
+    top: var(--y);
+    animation: sparkle 2s ease-in-out infinite;
+    animation-delay: var(--delay);
+    opacity: 0;
+  }
+
+  @keyframes sparkle {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .loading-animation {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .loading-circle {
+    width: 12px;
+    height: 12px;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    border-radius: 50%;
+    animation: bounce 1.4s ease-in-out infinite both;
+  }
+
+  .loading-circle:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+
+  .loading-circle:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+
+  @keyframes bounce {
+    0%, 80%, 100% {
+      transform: scale(0);
+    }
+    40% {
+      transform: scale(1);
+    }
+  }
+
+  .blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .blog-item {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .blog-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .item-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgba(16, 185, 129, 0.5);
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .blog-link {
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .category-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(16, 185, 129, 0.2);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: #6ee7b7;
+  }
+
+  .blog-date {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .blog-item-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    line-height: 1.4;
+  }
+
+  .blog-excerpt {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .blog-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .reading-time {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .read-more {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    color: #6ee7b7;
+    transition: gap 0.3s ease;
+  }
+
+  .blog-link:hover .read-more {
+    gap: 0.5rem;
+  }
+
+  .arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .blog-link:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  .error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+  }
+
+  .error-message i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: rgba(239, 68, 68, 0.8);
+  }
+
+  @media (max-width: 768px) {
+    .posts-title {
+      font-size: 1.5rem;
+    }
+
+    .blog-card {
+      padding: 1rem;
+    }
+
+    .blog-item {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .item-number {
+      font-size: 1.2rem;
+    }
+
+    .blog-item-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -1,20 +1,16 @@
 {
-  "name": "sinzero-homepage",
+  "name": "cenanewpage",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^4.0.0",
-    "immutable": "^5.1.4",
-    "remixicon": "^4.7.0"
-  },
-  "devDependencies": {
-    "sass": "^1.94.2"
+    "@astrojs/rss": "^4.0.15",
+    "astro": "^5.17.1",
+    "remixicon": "^4.9.1"
   }
 }

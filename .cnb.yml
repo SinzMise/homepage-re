@@ -1,0 +1,47 @@
+# 定义云构建
+main:
+  push:
+    - name: 同步仓库
+      stages:
+        - name: 同步 Github 仓库
+          imports: 
+            - https://cnb.cool/SinzMise/szn-cnb-keys/-/blob/main/github-cnb-push.yml
+          script: |
+            git remote add github https://x-access-token:$GITHUB_TOKEN@github.com/SinzMise/homepage-re
+            git push github main
+
+    - name: 上传到Edgeone
+      imports: 
+        - https://cnb.cool/SinzMise/szn-cnb-keys/-/blob/main/homepage-push.yml
+      docker:
+        image: node:22
+        volumes:
+          - /root/.npm
+          - ./node_modules
+      stages:
+        - name: 安装依赖
+          script: |
+            npm install
+        - name: 构建 + 上传到Edgeone
+          script: |
+            npm run build
+            edgeone pages deploy ./dist -n cenapage -t $EDGEONE_TOKEN
+
+    - name: 上传到Vercel
+      imports: 
+        - https://cnb.cool/SinzMise/szn-cnb-keys/-/blob/main/homepage-push.yml
+      docker:
+        image: node:22
+        volumes:
+          - /root/.npm
+          - ./node_modules
+      stages:
+        - name: 安装依赖
+          script: |
+            npm install
+            npm install -g gulp-cli vercel
+        - name: 构建 + 上传到Vercel
+          script: |
+            npm run build
+            cd dist
+            vercel deploy --prod --token $VERCEL_TOKEN           

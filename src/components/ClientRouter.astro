@@ -1,0 +1,202 @@
+---
+---
+
+<script client:load>
+  // 客户端路由实现
+  class ClientRouter {
+    constructor() {
+      this.init();
+    }
+
+    init() {
+      console.log('ClientRouter initialized');
+      // 监听所有链接点击
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (link && this.shouldHandleLink(link)) {
+          e.preventDefault();
+          console.log('Navigating to:', link.href);
+          this.navigate(link.href);
+        }
+      });
+
+      // 监听浏览器历史变化
+      window.addEventListener('popstate', (e) => {
+        if (e.state) {
+          console.log('Popstate to:', e.state.url);
+          this.loadPage(e.state.url, false);
+        }
+      });
+    }
+
+    shouldHandleLink(link) {
+      // 只处理站内链接，不处理外部链接和特殊链接
+      const result = (
+        link.host === window.location.host &&
+        !link.getAttribute('target') &&
+        !link.hasAttribute('data-no-router') &&
+        link.href !== window.location.href
+      );
+      console.log('Should handle link:', link.href, result);
+      return result;
+    }
+
+    async navigate(url) {
+      console.log('Navigate to:', url);
+      // 开始视图过渡
+      if (document.startViewTransition) {
+        console.log('Using View Transitions API');
+        document.startViewTransition(() => {
+          this.loadPage(url, true);
+        });
+      } else {
+        console.log('Falling back to regular navigation');
+        // 回退方案
+        this.loadPage(url, true);
+      }
+    }
+
+    async loadPage(url, pushState = true) {
+      try {
+        console.log('Loading page:', url);
+        // 加载新页面
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // 更新页面内容
+        this.updatePage(doc, url);
+
+        // 更新历史记录
+        if (pushState) {
+          console.log('Pushing state:', url);
+          history.pushState({ url }, '', url);
+        }
+
+        // 更新页面标题
+        const newTitle = doc.querySelector('title')?.textContent;
+        if (newTitle) {
+          console.log('Updating title:', newTitle);
+          document.title = newTitle;
+        }
+
+      } catch (error) {
+        console.error('Error loading page:', error);
+        // 回退到正常导航
+        window.location.href = url;
+      }
+    }
+
+    updatePage(doc, url) {
+      console.log('Updating page content');
+      // 找到主要内容区域并更新
+      const mainContent = document.querySelector('main');
+      const newMainContent = doc.querySelector('main');
+
+      if (mainContent && newMainContent) {
+        console.log('Updating main content');
+        mainContent.classList.remove('page-loaded');
+        // 强制重排
+        void mainContent.offsetWidth;
+        mainContent.innerHTML = newMainContent.innerHTML;
+        mainContent.classList.add('page-loaded');
+        
+        // 重新初始化页面上的脚本
+        this.initScripts();
+      }
+
+      // 更新活动链接状态
+      this.updateActiveLinks(url);
+    }
+
+    updateActiveLinks(url) {
+      console.log('Updating active links:', url);
+      // 更新导航链接的活动状态
+      const links = document.querySelectorAll('.nav-link');
+      links.forEach(link => {
+        if (link.href === url) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    initScripts() {
+      console.log('Initializing scripts');
+      // 重新初始化页面上的脚本
+      // 这里可以根据需要添加特定的脚本初始化逻辑
+    }
+  }
+
+  // 初始化客户端路由
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded, initializing ClientRouter');
+    new ClientRouter();
+  });
+</script>
+
+<style>
+  /* 页面过渡动画 */
+  main {
+    position: relative;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  main:not(.page-loaded) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  main.page-loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 视图过渡动画 */
+  @view-transition {
+    navigation: auto;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 为不同元素定义过渡效果 */
+  .page-wrapper {
+    view-transition-name: page-wrapper;
+  }
+
+  @view-transition-new(page-wrapper),
+  @view-transition-old(page-wrapper) {
+    animation-duration: 0.3s;
+  }
+
+  @view-transition-new(page-wrapper) {
+    animation-name: slide-up;
+  }
+
+  @view-transition-old(page-wrapper) {
+    animation-name: fade-in;
+    opacity: 0;
+  }
+</style>

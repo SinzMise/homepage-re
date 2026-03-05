@@ -1,0 +1,182 @@
+---
+import { profileConfig } from '../../astro.config.mjs';
+
+const profile = profileConfig;
+---
+
+<div class="profile-card">
+  <div class="card-glow"></div>
+  <div class="profile-header">
+    <div class="avatar-container">
+      <img src={profile.avatar} alt={profile.name} class="avatar" />
+      <div class="avatar-ring"></div>
+    </div>
+    <h2 class="profile-name">{profile.name}</h2>
+    <span class="profile-badge"><i class={profile.badge?.icon || 'ri-star-s-fill'}></i> {profile.badge?.text || '梦想家'}</span>
+  </div>
+  
+  <div class="profile-body">
+    <p class="profile-bio">{profile.bio}</p>
+  </div>
+  
+  <div class="profile-footer">
+    <h3 class="links-title"><i class="ri-link"></i> 链接</h3>
+    <div class="links-grid">
+      {profile.links.map((link) => (
+        <a href={link.url} target="_blank" rel="noopener noreferrer" class="link-item">
+          <i class={`link-icon ${link.icon}`}></i>
+          <span class="link-name">{link.name}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .profile-card {
+    position: relative;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(16, 185, 129, 0.2);
+  }
+
+  .card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .profile-card:hover .card-glow {
+    opacity: 1;
+  }
+
+  .profile-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .avatar-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .avatar-ring {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #10b981;
+    border-right-color: #34d399;
+    animation: rotate 4s linear infinite;
+  }
+
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff, #a7f3d0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .profile-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(52, 211, 153, 0.3));
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #6ee7b7;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .profile-body {
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-bio {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.8;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .profile-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+  }
+
+  .links-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+  }
+
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .link-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    border-color: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+  }
+
+  .link-icon {
+    font-size: 1.2rem;
+  }
+
+  .link-name {
+    font-size: 0.9rem;
+  }
+</style>

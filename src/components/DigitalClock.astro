@@ -1,0 +1,233 @@
+---
+---
+
+<div class="clock-card">
+  <div class="card-glow"></div>
+  <div class="clock-header">
+    <h2 class="clock-title">
+      <i class="ri-clock-line title-icon"></i>
+      当前时间
+    </h2>
+  </div>
+  
+  <div class="clock-content">
+    <div class="time-display">
+      <div class="time-main">
+        <span id="hours" class="time-unit">00</span>
+        <span class="time-separator">:</span>
+        <span id="minutes" class="time-unit">00</span>
+        <span class="time-separator">:</span>
+        <span id="seconds" class="time-unit seconds">00</span>
+      </div>
+      <div class="time-ampm" id="ampm"></div>
+    </div>
+    
+    <div class="date-display">
+      <div id="weekday" class="weekday">星期一</div>
+      <div id="fulldate" class="fulldate">2024年1月1日</div>
+    </div>
+    
+    <div class="clock-decoration">
+      <div class="decoration-line"></div>
+      <div class="decoration-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="decoration-line"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    
+    // 时间
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    
+    // 格式化时间（补零）
+    const hoursStr = hours.toString().padStart(2, '0');
+    const minutesStr = minutes.toString().padStart(2, '0');
+    const secondsStr = seconds.toString().padStart(2, '0');
+    
+    // 更新DOM
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+    
+    if (hoursEl) hoursEl.textContent = hoursStr;
+    if (minutesEl) minutesEl.textContent = minutesStr;
+    if (secondsEl) secondsEl.textContent = secondsStr;
+    
+    // 日期
+    const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const weekday = weekdays[now.getDay()];
+    
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    
+    const weekdayEl = document.getElementById('weekday');
+    const fulldateEl = document.getElementById('fulldate');
+    
+    if (weekdayEl) weekdayEl.textContent = weekday;
+    if (fulldateEl) fulldateEl.textContent = `${year}年${month}月${date}日`;
+  }
+  
+  // 初始化并每秒更新
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
+
+<style>
+  .clock-card {
+    position: relative;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 1.5rem;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+
+  .card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .clock-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .clock-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff, #a7f3d0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .title-icon {
+    -webkit-text-fill-color: initial;
+  }
+
+  .clock-content {
+    text-align: center;
+  }
+
+  .time-display {
+    margin-bottom: 1rem;
+  }
+
+  .time-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'Courier New', monospace;
+  }
+
+  .time-unit {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(180deg, #fff 0%, #a7f3d0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+    min-width: 2ch;
+  }
+
+  .time-unit.seconds {
+    font-size: 2rem;
+    background: linear-gradient(180deg, #6ee7b7 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .time-separator {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.5);
+    animation: blink 1s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .time-ampm {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.3rem;
+  }
+
+  .date-display {
+    margin-bottom: 1rem;
+  }
+
+  .weekday {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.3rem;
+  }
+
+  .fulldate {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .clock-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .decoration-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  }
+
+  .decoration-dots {
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .decoration-dots span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.6);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .decoration-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .decoration-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+</style>
