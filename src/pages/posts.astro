@@ -2,9 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { rssConfig, siteConfig } from '../../astro.config.mjs';
-
-const rssUrl = rssConfig.url;
+import { siteConfig } from '../../astro.config.mjs';
 ---
 
 <Layout title={`最新文章 - ${siteConfig.title}`}>
@@ -52,10 +50,8 @@ const rssUrl = rssConfig.url;
     const blogList = document.getElementById('blog-list');
     
     try {
-      // 从本地 JSON 文件获取文章数据
-      const response = await fetch('/data/posts.json');
-      if (!response.ok) throw new Error('Failed to fetch posts');
-      
+      // 使用本地 API 端点获取文章数据
+      const response = await fetch('/api/posts.json');
       const posts = await response.json();
       
       if (posts.length > 0) {
