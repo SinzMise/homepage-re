@@ -72,7 +72,7 @@ export const weatherConfig = {
 // 背景图片配置
 export const bgConfig = {
   // 是否启用背景图片
-  enable: false,
+  enable: true,
   // 背景图片URL
   imageUrl: "https://www.loliapi.com/acg/"
 };
