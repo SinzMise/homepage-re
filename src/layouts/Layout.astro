@@ -112,29 +112,6 @@ const { title } = Astro.props;
 
         // 更新活动链接状态
         this.updateActiveLinks(url);
-        
-        // 重新应用RemixIcon样式（防止无刷新加载时图标闪烁）
-        this.reapplyRemixIcon();
-      }
-      
-      reapplyRemixIcon() {
-        // 检查RemixIcon是否已加载
-        const existingLink = document.querySelector('link[href*="remixicon"]');
-        if (!existingLink) {
-          // 如果未加载，重新添加链接
-          const link = document.createElement('link');
-          link.href = 'https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css';
-          link.rel = 'stylesheet';
-          document.head.appendChild(link);
-        }
-        
-        // 强制重绘所有图标
-        const icons = document.querySelectorAll('[class*="ri-"]');
-        icons.forEach(icon => {
-          icon.style.display = 'none';
-          icon.offsetHeight; // 强制重排
-          icon.style.display = '';
-        });
       }
 
       updateActiveLinks(url) {
