@@ -25,23 +25,4 @@ main:
         - name: 构建 + 上传到Edgeone
           script: |
             npm run build
-            edgeone pages deploy ./dist -n cenapage -t $EDGEONE_TOKEN
-
-    - name: 上传到Vercel
-      imports: 
-        - https://cnb.cool/SinzMise/szn-cnb-keys/-/blob/main/homepage-push.yml
-      docker:
-        image: node:22
-        volumes:
-          - /root/.npm
-          - ./node_modules
-      stages:
-        - name: 安装依赖
-          script: |
-            npm install
-            npm install -g gulp-cli vercel
-        - name: 构建 + 上传到Vercel
-          script: |
-            npm run build
-            cd dist
-            vercel deploy --prod --token $VERCEL_TOKEN           
+            edgeone pages deploy ./dist -n cenapage -t $EDGEONE_TOKEN       
