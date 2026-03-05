@@ -74,7 +74,7 @@ export const bgConfig = {
   // 是否启用背景图片
   enable: true,
   // 背景图片URL
-  imageUrl: "https://www.loliapi.com/acg/"
+  imageUrl: "#"
 };
 
 // 网站列表配置

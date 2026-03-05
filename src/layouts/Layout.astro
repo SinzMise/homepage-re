@@ -16,7 +16,6 @@ const { title } = Astro.props;
   <meta name="generator" content={Astro.generator} />
   <title>{title}</title>
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
-  <script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script>
   <script client:load>
     // 客户端路由实现
     class ClientRouter {
@@ -224,12 +223,10 @@ const { title } = Astro.props;
   </style>
 </head>
 <body>
-  {bgConfig.enable && (
-    <div class="bg-container" style={`background-image: url('${bgConfig.imageUrl}')`}>
-      <div class="bg-overlay"></div>
-      <canvas id="starfield" class="starfield"></canvas>
-    </div>
-  )}
+  <div class="bg-container" style={bgConfig.enable ? `background-image: url('${bgConfig.imageUrl}')` : undefined}>
+    <div class="bg-overlay"></div>
+    <canvas id="starfield" class="starfield"></canvas>
+  </div>
   <slot />
   
   <script client:load>
@@ -446,7 +443,7 @@ const { title } = Astro.props;
       rgba(20, 80, 40, 0.83) 50%,
       rgba(10, 50, 30, 0.93) 100%
     );
-    backdrop-filter: blur(2px);
+
   }
 
   .starfield {
