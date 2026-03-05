@@ -72,38 +72,16 @@ async function fetchRSS(url: string) {
   </div>
 </div>
 
-<script define:vars={{ rssUrl }}>
+<script>
   async function fetchPosts() {
     const blogList = document.getElementById('blog-list');
     
     try {
-      // 使用 CORS 代理解决跨域问题
-      const corsProxy = 'https://api.allorigins.win/raw?url=';
-      const response = await fetch(corsProxy + encodeURIComponent(rssUrl));
-      const xmlText = await response.text();
+      // 从本地 JSON 文件获取文章数据
+      const response = await fetch('/data/posts.json');
+      if (!response.ok) throw new Error('Failed to fetch posts');
       
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-      
-      const items = xmlDoc.querySelectorAll('item');
-      const posts = [];
-      
-      for (let i = 0; i < Math.min(items.length, 10); i++) {
-        const item = items[i];
-        const title = item.querySelector('title')?.textContent || '';
-        const link = item.querySelector('link')?.textContent || '';
-        const pubDate = item.querySelector('pubDate')?.textContent || '';
-        const description = item.querySelector('description')?.textContent || '';
-        const categories = Array.from(item.querySelectorAll('category')).map(cat => cat.textContent);
-        
-        posts.push({
-          title,
-          link,
-          pubDate,
-          description,
-          categories
-        });
-      }
+      const posts = await response.json();
       
       if (posts.length > 0) {
         

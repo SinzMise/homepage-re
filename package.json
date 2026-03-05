@@ -3,14 +3,16 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "node scripts/fetch-rss.js && astro dev",
+    "build": "node scripts/fetch-rss.js && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.15",
     "astro": "^5.17.1",
-    "remixicon": "^4.9.1"
+    "jsdom": "^28.1.0",
+    "remixicon": "^4.9.1",
+    "xml2js": "^0.6.2"
   }
 }

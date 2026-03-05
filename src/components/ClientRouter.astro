@@ -152,17 +152,17 @@
   /* 页面过渡动画 */
   main {
     position: relative;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
   main:not(.page-loaded) {
     opacity: 0;
-    transform: translateY(20px);
+    transform: scale(0.95);
   }
 
   main.page-loaded {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 
   /* 视图过渡动画 */
@@ -170,23 +170,25 @@
     navigation: auto;
   }
 
-  @keyframes fade-in {
+  @keyframes fade-out {
     from {
-      opacity: 0;
+      opacity: 1;
+      transform: scale(1);
     }
     to {
-      opacity: 1;
+      opacity: 0;
+      transform: scale(0.95);
     }
   }
 
-  @keyframes slide-up {
+  @keyframes fade-in-scale {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: scale(0.95);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: scale(1);
     }
   }
 
@@ -197,15 +199,16 @@
 
   @view-transition-new(page-wrapper),
   @view-transition-old(page-wrapper) {
-    animation-duration: 0.3s;
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   @view-transition-new(page-wrapper) {
-    animation-name: slide-up;
+    animation-name: fade-in-scale;
   }
 
   @view-transition-old(page-wrapper) {
-    animation-name: fade-in;
+    animation-name: fade-out;
     opacity: 0;
   }
 </style>
