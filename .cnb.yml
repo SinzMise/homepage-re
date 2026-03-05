@@ -22,6 +22,7 @@ main:
         - name: 安装依赖
           script: |
             npm install
+            npm install -g edgeone
         - name: 构建 + 上传到Edgeone
           script: |
             npm run build
