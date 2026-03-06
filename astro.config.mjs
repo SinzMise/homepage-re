@@ -41,14 +41,14 @@ export const navigationConfig = {
       name: "汐娜魔法书", 
       url: "https://diary.sinzmise.top/", 
       target: "_blank",
-      icon: "ri-book-2-line",
+      icon: "ri-book-2-fill",
       color: "#f59e0b"
     },
     { 
       name: "魔法监测站", 
       url: "https://monitor.sinzmise.top/", 
       target: "_blank",
-      icon: "ri-magic-line",
+      icon: "ri-magic-fill",
       color: "#8b5cf6"
     }
   ]
@@ -81,36 +81,7 @@ export const bgConfig = {
 export const websitesConfig = {
   title: "我的网站",
   description: "这里收集了我搭建的一些小项目",
-  items: [
-    {
-      name: "绘星里",
-      description: "一个博客，但是取的是一个巷子的名称~",
-      url: "https://blog.storia.ren/",
-      icon: "ri-bard-fill",
-      color: "#10b981"
-    },
-    {
-      name: "汐娜魔法书",
-      description: "喜欢将日常碎碎念和即时想法记录在这里~",
-      url: "https://diary.sinzmise.top/",
-      icon: "ri-book-2-line",
-      color: "#f59e0b"
-    },
-    {
-      name: "魔法监测站",
-      description: "服务器监控，同时也是站点监控~不过我没有服务器所以就当做站点监控了哈哈哈......",
-      url: "https://monitor.sinzmise.top/",
-      icon: "ri-magic-line",
-      color: "#8b5cf6"
-    },
-    {
-      name: "Umami统计",
-      description: "网站流量统计分析工具",
-      url: "https://umami.status.sinzmise.top/",
-      icon: "ri-bar-chart-2-line",
-      color: "#3b82f6"
-    },
-  ]
+  configPath: "src/data/websites.yml"
 };
 
 // https://astro.build/config

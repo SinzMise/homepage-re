@@ -3,9 +3,20 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { siteConfig, websitesConfig } from '../../astro.config.mjs';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+
+// 读取网站列表配置
+const websitesData = yaml.load(fs.readFileSync(path.resolve(websitesConfig.configPath), 'utf8'));
+const websites = {
+  title: websitesConfig.title,
+  description: websitesConfig.description,
+  categories: websitesData.categories || []
+};
 ---
 
-<Layout title={`${websitesConfig.title} - ${siteConfig.title}`}>
+<Layout title={`${websites.title} - ${siteConfig.title}`}>
   <div class="page-wrapper">
     <Header />
     
@@ -14,28 +25,36 @@ import { siteConfig, websitesConfig } from '../../astro.config.mjs';
         <div class="sites-header">
           <h1 class="sites-title">
             <i class="ri-earth-line"></i>
-            {websitesConfig.title}
+            {websites.title}
           </h1>
-          <p class="sites-description">{websitesConfig.description}</p>
+          <p class="sites-description">{websites.description}</p>
         </div>
         
-        <div class="sites-grid">
-          {websitesConfig.items.map((site) => (
-            <a href={site.url} target="_blank" rel="noopener noreferrer" class="site-card" style={`--accent-color: ${site.color}`}>
-              <div class="card-glow"></div>
-              <div class="card-icon">
-                <i class={site.icon}></i>
-              </div>
-              <div class="card-content">
-                <h3 class="card-title">{site.name}</h3>
-                <p class="card-description">{site.description}</p>
-              </div>
-              <div class="card-arrow">
-                <i class="ri-arrow-right-up-line"></i>
-              </div>
-            </a>
-          ))}
-        </div>
+        {websites.categories.map((category) => (
+          <div class="category-section">
+            <h2 class="category-title" style={`--category-color: ${category.color}`}>
+              <i class={category.icon}></i>
+              {category.name}
+            </h2>
+            <div class="sites-grid">
+              {category.items.map((site) => (
+                <a href={site.url} target="_blank" rel="noopener noreferrer" class="site-card" style={`--accent-color: ${site.color}`}>
+                  <div class="card-glow"></div>
+                  <div class="card-icon">
+                    <i class={site.icon}></i>
+                  </div>
+                  <div class="card-content">
+                    <h3 class="card-title">{site.name}</h3>
+                    <p class="card-description">{site.description}</p>
+                  </div>
+                  <div class="card-arrow">
+                    <i class="ri-arrow-right-up-line"></i>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </main>
     
@@ -87,6 +106,26 @@ import { siteConfig, websitesConfig } from '../../astro.config.mjs';
   .sites-description {
     color: rgba(255, 255, 255, 0.7);
     font-size: 1.1rem;
+  }
+
+  .category-section {
+    margin-bottom: 3rem;
+  }
+
+  .category-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .category-title i {
+    color: var(--category-color, #10b981);
   }
 
   .sites-grid {
@@ -197,6 +236,10 @@ import { siteConfig, websitesConfig } from '../../astro.config.mjs';
 
     .sites-grid {
       grid-template-columns: 1fr;
+    }
+
+    .category-title {
+      font-size: 1.3rem;
     }
   }
 </style>
