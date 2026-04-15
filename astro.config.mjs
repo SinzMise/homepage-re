@@ -12,7 +12,7 @@ export const profileConfig = {
   name: "王九弦SZ·Ninty",
   bio: "来吧，一起绘制属于我们的星星吧！",
   badge: {
-    text: "梦想家",
+    text: "绘星者",
     icon: "ri-star-s-fill"
   },
   links: [
