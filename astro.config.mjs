@@ -8,7 +8,7 @@ export const rssConfig = {
 
 // 站长信息配置
 export const profileConfig = {
-  avatar: "https://blog.storia.ren/img/avatar.webp",
+  avatar: "/avatar.webp",
   name: "王九弦SZ·Ninty",
   bio: "来吧，一起绘制属于我们的星星吧！",
   badge: {
